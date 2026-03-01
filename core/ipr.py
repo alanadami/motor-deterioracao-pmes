@@ -5,6 +5,7 @@ from core.utils import (
     max_consecutive_below,
     normalize_sequence,
 )
+from core.utils import to_native
 
 
 def calculate_ipr(df: pd.DataFrame, baseline_receita: float):
@@ -28,7 +29,7 @@ def calculate_ipr(df: pd.DataFrame, baseline_receita: float):
     # 5️⃣ Score final
     score = (dn + sc_norm) / 2
 
-    return {
+    return to_native({
         "score": score,
         "componentes": {
             "DN": dn,
@@ -37,4 +38,4 @@ def calculate_ipr(df: pd.DataFrame, baseline_receita: float):
         },
         "alertas": {},
         "override": False,
-    }
+    })

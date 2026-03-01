@@ -36,3 +36,52 @@ def normalize_sequence(seq, window):
     Normaliza sequência em relação à janela.
     """
     return clamp(seq / window)
+
+
+def to_native(obj):
+    """
+    Converte recursivamente tipos numpy para tipos nativos do Python.
+    """
+    import numpy as np
+
+    if isinstance(obj, dict):
+        return {k: to_native(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [to_native(v) for v in obj]
+    elif isinstance(obj, np.generic):
+        return obj.item()
+    else:
+        return obj
+    
+   
+
+def format_for_display(obj):
+    """
+    Formata saída para apresentação:
+    - Todos os floats com 2 casas decimais
+    - Campos monetários recebem prefixo 'R$ '
+    """
+
+    monetary_keys = {
+        "margem_media_recente",
+        "media_recente",
+        "baseline_margem",
+    }
+
+    if isinstance(obj, dict):
+        formatted = {}
+        for k, v in obj.items():
+            if isinstance(v, float):
+                if k in monetary_keys:
+                    formatted[k] = f"R$ {v:,.2f}"
+                else:
+                    formatted[k] = round(v, 2)
+            else:
+                formatted[k] = format_for_display(v)
+        return formatted
+
+    elif isinstance(obj, list):
+        return [format_for_display(v) for v in obj]
+
+    else:
+        return obj

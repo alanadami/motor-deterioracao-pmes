@@ -5,6 +5,7 @@ from core.utils import (
     max_consecutive_below,
     normalize_sequence,
     clamp,
+    to_native,
 )
 from core.baseline import calculate_recent_mean
 
@@ -39,11 +40,14 @@ def calculate_ifc(df: pd.DataFrame, baseline_caixa: float):
     custo_medio_recente = calculate_recent_mean(df["custos"])
 
     if custo_medio_recente <= 0:
-        cobertura = 0
+        cobertura = 0.0
     else:
         cobertura = caixa_atual / custo_medio_recente
 
-    cs_score = max(0.0, 1 - cobertura / COVERAGE_FULL_SCORE)
+    # Score de cobertura:
+    # 0 → cobertura >= COVERAGE_FULL_SCORE
+    # 1 → cobertura muito baixa
+    cs_score = max(0.0, 1 - (cobertura / COVERAGE_FULL_SCORE))
 
     # ==========================
     # 3️⃣ Score final IFC
@@ -55,12 +59,14 @@ def calculate_ifc(df: pd.DataFrame, baseline_caixa: float):
     # 4️⃣ Regra de override
     # ==========================
 
-    override = False
+    liquidez_critica = cobertura < COVERAGE_OVERRIDE
+    override = liquidez_critica
 
-    if cobertura < COVERAGE_OVERRIDE:
-        override = True
+    # ==========================
+    # 5️⃣ Retorno estruturado
+    # ==========================
 
-    return {
+    return to_native({
         "score": float(score),
         "componentes": {
             "DN": float(dn),
@@ -71,7 +77,7 @@ def calculate_ifc(df: pd.DataFrame, baseline_caixa: float):
             "CS_score": float(cs_score),
         },
         "alertas": {
-            "liquidez_critica": cobertura < COVERAGE_OVERRIDE
+            "liquidez_critica": liquidez_critica
         },
         "override": override,
-    }
+    })

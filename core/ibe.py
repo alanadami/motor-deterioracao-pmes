@@ -7,6 +7,7 @@ from core.utils import (
     clamp,
 )
 from core.baseline import calculate_recent_mean
+from core.utils import to_native
 
 
 def calculate_ibe(df: pd.DataFrame, baseline_caixa: float):
@@ -49,7 +50,7 @@ def calculate_ibe(df: pd.DataFrame, baseline_caixa: float):
 
     score = clamp((rr_norm + pr) / 2)
 
-    return {
+    return to_native ({
         "score": float(score),
         "componentes": {
             "RR_norm": float(rr_norm),
@@ -60,4 +61,4 @@ def calculate_ibe(df: pd.DataFrame, baseline_caixa: float):
         },
         "alertas": {},
         "override": False,
-    }
+    })
