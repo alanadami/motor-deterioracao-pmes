@@ -66,6 +66,8 @@ def format_for_display(obj):
         "margem_media_recente",
         "media_recente",
         "baseline_margem",
+        "baseline_receita",
+        "baseline_caixa",
     }
 
     if isinstance(obj, dict):

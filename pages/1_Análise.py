@@ -70,7 +70,12 @@ if uploaded_file:
         ifc_result,
         ibe_result,
         isg_result,
-        confianca_result
+        confianca_result,
+        baselines={
+            "baseline_receita": baseline_receita,
+            "baseline_margem": baseline_margem,
+            "baseline_caixa": baseline_caixa,
+        }
     )
 
     st.session_state.payload = payload

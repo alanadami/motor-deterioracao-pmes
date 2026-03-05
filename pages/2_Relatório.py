@@ -1,6 +1,8 @@
 import streamlit as st
 from PIL import Image
 
+from core.pdf_report import build_pdf
+
 st.set_page_config(page_title="Relatório EWS-PME", layout="centered")
 
 if "payload" not in st.session_state:
@@ -12,6 +14,19 @@ resumo = payload["resumo_executivo"]
 indicadores = payload["indicadores"]
 alertas = payload["alertas"]
 confianca = payload["confianca_detalhe"]
+
+meta = {
+    "empresa": st.session_state.get("empresa"),
+    "responsavel": st.session_state.get("responsavel"),
+    "email": st.session_state.get("email"),
+}
+pdf_bytes = build_pdf(payload, meta=meta)
+st.download_button(
+    "Baixar PDF",
+    data=pdf_bytes,
+    file_name="relatorio_ews_pme.pdf",
+    mime="application/pdf",
+)
 
 # =========================
 # HELPERS DE COR
