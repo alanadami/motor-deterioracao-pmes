@@ -10,7 +10,7 @@ st.set_page_config(
 )
 
 if "authorized" not in st.session_state:
-    st.session_state.authorized = False
+    st.session_state.authorized = True
 
 
 logo = Image.open("assets/logo.png")
@@ -42,41 +42,9 @@ Ferramenta online para identificação de sinais estruturais de deterioração f
     - caixa
 """)
 
-st.markdown("### Identificação para geração do relatório")
-
-empresa = st.text_input("Nome da empresa")
-responsavel = st.text_input("Responsável")
-email = st.text_input("Email para contato")
-telefone = st.text_input("Telefone")
-
-autorizacao = st.checkbox(
-    "Declaro que compreendo o funcionamento da ferramenta e autorizo contato posterior."
+st.markdown("### Envie sua opinião")
+st.markdown(
+    "Quer aprofundar nos relatórios ou deixar feedback? "
+    "Envie um email para **galves.alan@gmail.com**."
 )
-
-if st.button("Prosseguir para Análise"):
-    erros = []
-    if not empresa:
-        erros.append("Informe o nome da empresa.")
-    if not responsavel:
-        erros.append("Informe o responsável.")
-
-    email_ok = bool(re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email or ""))
-    if not email_ok:
-        erros.append("Informe um e-mail válido.")
-
-    telefone_digitos = re.sub(r"\D", "", telefone or "")
-    if len(telefone_digitos) not in (10, 11):
-        erros.append("Informe um telefone válido (DDD + número).")
-
-    if not autorizacao:
-        erros.append("Confirme a autorização para contato.")
-
-    if erros:
-        st.error(" ".join(erros))
-    else:
-        st.session_state.authorized = True
-        st.session_state.empresa = empresa
-        st.session_state.responsavel = responsavel
-        st.session_state.email = email
-        st.session_state.telefone = telefone
-        st.success("Identificação confirmada. Acesse a página 'Análise' no menu lateral.")
+st.info("Acesse a página 'Análise' no menu lateral para iniciar.")
