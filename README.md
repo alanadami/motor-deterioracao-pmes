@@ -12,9 +12,7 @@ O objetivo não é prever falências, mas identificar regimes de deterioração 
 
 ## Prints do Dashboard
 
-<img src="assets/prints/cover_EWS.png" alt="Capa Inicial - EWS" width="800">
 <img src="assets/prints/dashboard_01.png" alt="Dashboard - Visão Geral" width="800">
-![Relatório - Visão técnica](assets/prints/relatorio.png)
 
 ## Problema
 
