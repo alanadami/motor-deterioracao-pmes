@@ -406,6 +406,8 @@ with col2:
 
 with col3:
     conf_pct = int(float(resumo['confianca']) * 100)
+    conf_status = confianca.get("status", "")
+    conf_tag = f"Confiança {conf_status}".strip()
     st.markdown(f"""
     <div class='hero-card card-conf'>
         <div class='card-label'>Confiança</div>
@@ -413,7 +415,7 @@ with col3:
         <div class='conf-bar'>
             <div class='conf-fill' style='width:{conf_pct}%;'></div>
         </div>
-        <div class='conf-tag'>✓ Máxima confiança</div>
+        <div class='conf-tag'>{conf_tag}</div>
     </div>
     """, unsafe_allow_html=True)
 
