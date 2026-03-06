@@ -8,12 +8,12 @@ O objetivo não é prever falências, mas identificar regimes de deterioração 
 
 ## Demo Online
 
-[clinicarevitalize.streamlit.app](https://clinicarevitalize.streamlit.app/)
+[sistemadeterioracao.streamlit.app](https://sistemadeterioracao.streamlit.app/)
 
 ## Prints do Dashboard
 
-![Capa Inicial - EWS](assets/prints/cover_EWS.png)
-![Dashboard - Visão Geral](assets/prints/dashboard_01.png)
+<img src="assets/prints/cover_EWS.png" alt="Capa Inicial - EWS" width="800">
+<img src="assets/prints/dashboard_01.png" alt="Dashboard - Visão Geral" width="800">
 ![Relatório - Visão técnica](assets/prints/relatorio.png)
 
 ## Problema
