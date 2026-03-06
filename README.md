@@ -95,10 +95,6 @@ EWS_ML/
 ├── assets/
 │   ├── logo.png
 │   └── logo_banner.png
-├── data/
-│   └── *.csv
-├── testes/
-│   └── gerador.py
 ├── .streamlit/
 │   └── config.toml
 ├── config.py
@@ -173,5 +169,6 @@ O motor foi desenvolvido com três princípios principais:
 ## Autor
 
 Alan Alves
+galves.alan@gmail.com
 
 Projeto desenvolvido como estudo aplicado em análise de deterioração de negócios e sistemas de alerta precoce.
