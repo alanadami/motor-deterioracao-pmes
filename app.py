@@ -39,7 +39,7 @@ Ferramenta online para identificação de sinais estruturais de deterioração f
     - data (YYYY-MM)
     - receita
     - custos
-- caixa
+    - caixa
 """)
 
 st.markdown("### Checklist rápido")

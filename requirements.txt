@@ -3,5 +3,5 @@ pandas
 numpy
 Pillow
 reportlab
-plotly
-kaleido
+plotly==5.22.0
+kaleido==0.2.1
