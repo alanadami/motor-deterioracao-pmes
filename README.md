@@ -14,6 +14,13 @@ O objetivo não é prever falências, mas identificar regimes de deterioração 
 
 <img src="assets/prints/dashboard_01.png" alt="Dashboard - Visão Geral" width="800">
 
+## Como Rodar Localmente
+
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
+
 ## Problema
 
 Negócios raramente entram em crise de forma súbita.  
@@ -80,6 +87,7 @@ EWS_ML/
 ├── pages/
 │   ├── 1_Análise.py
 │   └── 2_Relatório.py
+│   └── 3_Indicadores.py
 ├── core/
 │   ├── __init__.py
 │   ├── baseline.py
@@ -95,8 +103,18 @@ EWS_ML/
 ├── assets/
 │   ├── logo.png
 │   └── logo_banner.png
+│   └── prints/
+│       └── dashboard_01.png
 ├── .streamlit/
 │   └── config.toml
+├── charts/
+│   ├── __init__.py
+│   ├── caixa_custos.py
+│   ├── ifc.py
+│   ├── ibe.py
+│   ├── ipm.py
+│   ├── ipr.py
+│   └── margem_receita.py
 ├── config.py
 ├── main.py
 └── requirements.txt

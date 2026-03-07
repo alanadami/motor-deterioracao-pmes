@@ -39,7 +39,14 @@ Ferramenta online para identificação de sinais estruturais de deterioração f
     - data (YYYY-MM)
     - receita
     - custos
-    - caixa
+- caixa
+""")
+
+st.markdown("### Checklist rápido")
+st.markdown("""
+- Separe um CSV mensal com `data`, `receita`, `custos` e `caixa`.
+- Acesse **Análise** no menu lateral e envie o arquivo.
+- Gere o relatório e, se necessário, baixe o PDF.
 """)
 
 st.markdown("### Envie sua opinião")
