@@ -79,6 +79,7 @@ if uploaded_file:
     )
 
     st.session_state.payload = payload
+    st.session_state.df = df.copy()
 
     st.success("Análise concluída.")
 

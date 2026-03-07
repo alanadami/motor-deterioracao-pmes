@@ -20,7 +20,7 @@ meta = {
     "responsavel": st.session_state.get("responsavel"),
     "email": st.session_state.get("email"),
 }
-pdf_bytes = build_pdf(payload, meta=meta)
+pdf_bytes = build_pdf(payload, meta=meta, df=st.session_state.get("df"))
 st.download_button(
     "Baixar PDF",
     data=pdf_bytes,

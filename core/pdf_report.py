@@ -13,10 +13,20 @@ from reportlab.platypus import (
     Table,
     TableStyle,
     Image as RLImage,
+    KeepTogether,
 )
+import plotly.io as pio
+
+from config import COVERAGE_OVERRIDE, RECENT_WINDOW, PERSIST_WINDOW
+from charts.ipr import plot_ipr
+from charts.ipm import plot_ipm
+from charts.ifc import plot_ifc
+from charts.ibe import plot_ibe
+from charts.margem_receita import plot_margem_receita
+from charts.caixa_custos import plot_caixa_custos
 
 
-def build_pdf(payload, meta=None):
+def build_pdf(payload, meta=None, df=None):
     """
     Gera um PDF em memoria com duas paginas:
     1) Resumo do dashboard
@@ -150,6 +160,74 @@ def build_pdf(payload, meta=None):
             story.append(_make_table(_dict_rows(data)))
             story.append(Spacer(1, 8))
 
+    # Graficos
+    if df is not None:
+        story.append(Spacer(1, 18))
+        story.append(_section_banner("Graficos"))
+        story.append(Spacer(1, 6))
+
+        df = df.copy()
+        if "margem" not in df.columns:
+            df["margem"] = df["receita"] - df["custos"]
+        df = df.sort_values("data")
+
+        baselines = payload.get("baselines", {}) if isinstance(payload, dict) else {}
+        baseline_receita = _to_float(baselines.get("baseline_receita", df["receita"].median()))
+        baseline_margem = _to_float(baselines.get("baseline_margem", df["margem"].median()))
+        baseline_caixa = _to_float(baselines.get("baseline_caixa", df["caixa"].median()))
+
+        charts = [
+            (
+                "IPR — Receita vs Baseline",
+                plot_ipr(
+                    df,
+                    baseline_receita,
+                    baseline_label=f"Baseline: {_format_currency(baseline_receita)}",
+                    last_n=PERSIST_WINDOW,
+                ),
+            ),
+            (
+                "IPM — Margem vs Baseline",
+                plot_ipm(
+                    df,
+                    baseline_margem,
+                    baseline_label=f"Baseline: {_format_currency(baseline_margem)}",
+                    last_n=PERSIST_WINDOW,
+                ),
+            ),
+            (
+                "IFC — Cobertura de Caixa (meses)",
+                plot_ifc(
+                    df,
+                    COVERAGE_OVERRIDE,
+                    RECENT_WINDOW,
+                    baseline_label=f"Mín. estrutural: {COVERAGE_OVERRIDE:.1f}m",
+                    last_n=PERSIST_WINDOW,
+                ),
+            ),
+            (
+                "IBE — Caixa vs Baseline",
+                plot_ibe(
+                    df,
+                    baseline_caixa,
+                    baseline_label=f"Baseline: {_format_currency(baseline_caixa)}",
+                    last_n=PERSIST_WINDOW,
+                ),
+            ),
+            ("Margem vs Receita", plot_margem_receita(df, last_n=PERSIST_WINDOW)),
+            ("Caixa vs Custos Médios", plot_caixa_custos(df, RECENT_WINDOW, last_n=PERSIST_WINDOW)),
+        ]
+
+        for title, fig in charts:
+            block = [Paragraph(title, h3_style)]
+            img = _plotly_image(fig, max_width=16 * cm)
+            if img:
+                block.append(img)
+            else:
+                block.append(Paragraph("Gráfico indisponível (verifique Kaleido).", small_style))
+            block.append(Spacer(1, 12))
+            story.append(KeepTogether(block))
+
     doc.build(story)
     pdf = buffer.getvalue()
     buffer.close()
@@ -237,3 +315,46 @@ def _normalize_label(label):
         label = label[len("componentes."):]
     label = label.replace(".componentes.", ".")
     return label
+
+
+def _plotly_image(fig, max_width):
+    try:
+        image_bytes = fig.to_image(format="png", engine="kaleido", scale=2)
+    except Exception:
+        try:
+            image_bytes = pio.to_image(fig, format="png", engine="kaleido", scale=2)
+        except Exception:
+            return None
+    img_reader = ImageReader(BytesIO(image_bytes))
+    width_px, height_px = img_reader.getSize()
+    if width_px <= 0 or height_px <= 0:
+        return None
+    scale = min(1.0, max_width / float(width_px))
+    img = RLImage(BytesIO(image_bytes), width=width_px * scale, height=height_px * scale)
+    img.hAlign = "CENTER"
+    return img
+
+
+def _to_float(value):
+    if isinstance(value, (int, float)):
+        return float(value)
+    if value is None:
+        return 0.0
+    text = str(value).replace("R$", "").replace(" ", "")
+    text = "".join(ch for ch in text if ch.isdigit() or ch in ",.-")
+    if "," in text and "." in text:
+        text = text.replace(",", "")
+    elif "," in text and "." not in text:
+        text = text.replace(",", ".")
+    try:
+        return float(text)
+    except ValueError:
+        return 0.0
+
+
+def _format_currency(value):
+    sign = "-" if value < 0 else ""
+    value = abs(value)
+    text = f"{value:,.0f}"
+    text = text.replace(",", "X").replace(".", ",").replace("X", ".")
+    return f"{sign}R$ {text}"
