@@ -159,6 +159,7 @@ O sistema gera:
 
 - Dashboard com classificação, score técnico, confiança, indicadores e alertas.
 - Relatório em PDF com seção executiva e detalhamento técnico.
+- Página de **Indicadores** com gráficos explicativos (IPR, IPM, IFC, IBE, Margem vs Receita, Caixa vs Custos Médios).
 
 ## Filosofia do Projeto
 
